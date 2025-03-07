@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body style="background: #222;">
+    {% extends 'base_admin.html' %}
+
+    {% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center text-warning fw-bold mb-4">📋 Gestión de Reservas</h1>
+
+        <div class="table-responsive">
+            <table class="table table-dark table-hover text-center align-middle">
+                <thead class="table-warning">
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Teléfono</th>
+                        <th>Email</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reserva in reservas %}
+                    <tr>
+                        <td>{{ reserva.client }}</td>
+                        <td>{{ reserva.phone }}</td>
+                        <td>{{ reserva.email }}</td>
+                        <td>{{ reserva.date }}</td>
+                        <td>{{ reserva.time }}</td>
+                        <td>
+                            <span class="badge 
+                                {% if reserva.status == 'pendiente' %} bg-warning text-dark
+                                {% elif reserva.status == 'atendida' %} bg-success
+                                {% elif reserva.status == 'cancelada' %} bg-danger 
+                                {% endif %}">
+                                {{ reserva.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if reserva.status == "pendiente" %}
+                            <a href="{% url 'update_reserve_status' reserva.id 'atendida' %}"
+                                class="btn btn-success btn-sm fw-bold">✔ Atendida</a>
+                            <a href="{% url 'update_reserve_status' reserva.id 'cancelada' %}"
+                                class="btn btn-danger btn-sm fw-bold">✖ Cancelada</a>
+                            {% else %}
+                            <span class="text-secondary">Sin acciones</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+
+</html>

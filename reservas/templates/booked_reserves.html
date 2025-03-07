@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="background: #222">
+    {% extends 'base.html' %}
+
+    {% block content %}
+    <div class="container mt-4">
+        <h1 class="text-center text-warning mb-4" style="font-family: 'Georgia', serif;">Reservas de la Barbería</h1>
+        <div class="row justify-content-center">
+            {% for reserve in reserves %}
+            <div class="col-md-6 col-lg-4 d-flex align-items-stretch">
+                <div class="card text-light shadow-lg w-100" 
+                     style="background: #222; border: 2px solid #b8860b;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title text-warning">{{ reserve.barber }}</h5>
+                        <p class="card-text"><strong>Cliente:</strong> {{ reserve.client }}</p>
+                        <p class="card-text"><strong>Fecha:</strong> {{ reserve.date }}</p>
+                        <p class="card-text"><strong>Hora:</strong> {{ reserve.time }}</p>
+                        <p class=
+                        "{% if reserve.status == 'pendiente' %} bg-warning text-dark
+                        {% elif reserve.status == 'atendida' %} bg-success
+                        {% elif reserve.status == 'cancelada' %} bg-danger 
+                        {% endif %}"><strong>Estado:</strong> {{ reserve.get_status_display }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

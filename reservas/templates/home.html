@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="background: #222">
+    {% extends 'base.html' %}
+    {% block content %}
+    <main class="container text-center mt-5">
+        <div class="p-4 rounded shadow-lg mx-auto w-50" style="background: #222; color: #fff; border: 2px solid #b8860b;">
+            <h1 class="text-warning mb-3" style="font-family: 'Georgia', serif;">Django Reserves</h1>
+            <p class="text-light">
+                Sistema de reservas para barberías que incluye autenticación de usuarios, gestión y seguimiento de reservas. Además, incorpora JavaScript para la actualización dinámica de los select y EmailJS para el envío automatizado de correos con los detalles de la reserva.
+            </p>
+            <div class="mt-4">
+                <a href="{% url 'signup' %}" class="btn btn-warning fw-bold me-3">Sign Up</a>
+                <a href="{% url 'signin' %}" class="btn btn-outline-warning fw-bold">Sign In</a>
+            </div>
+        </div>
+    </main>
+    {% endblock %}
+</body>
+</html>

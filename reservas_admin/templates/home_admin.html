@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="background: #222">
+    {% extends 'base_admin.html' %}
+    {% block content %}
+    <main class="container text-center mt-5">
+        <div class="p-4 rounded shadow-lg mx-auto w-50" style="background: #222; color: #fff; border: 2px solid #b8860b;">
+            <h1 class="text-warning mb-3" style="font-family: 'Georgia', serif;">Panel administración</h1>
+            <p class="text-light">
+                Control de administracion para el control de las reservas realizadas. La misma se podrá marcar como "Atendidas" o "Canceladas" con el fin de mantener un mayor orden para el/los barberos.
+            </p>
+        </div>
+    </main>
+    {% endblock %}
+</body>
+</html>

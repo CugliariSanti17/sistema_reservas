@@ -1,0 +1,14 @@
+.form-control-custom {
+    width: 100%;
+    font-size: 16px;
+    border: 2px solid #b8860b;
+    border-radius: 5px;
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+}
+
+.form-control-custom:focus {
+    outline: none;
+    border-color: #ffc107;
+}

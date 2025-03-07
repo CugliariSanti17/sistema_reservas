@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        emailjs.init("Gg-9SlmMdkXxWbN9H");
+    </script>
+</head>
+<body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+    <form method="POST" action="/reserve/" id="reserveForm" class="p-4 rounded shadow-lg" style="background: #222; color: #fff; border: 2px solid #b8860b;">
+        {% csrf_token %}
+        <h2 class="text-center text-warning mb-4" style="font-family: 'Georgia', serif;">Reserva tu Turno</h2>
+        <div class="mb-3 mx-auto w-50">
+            <label for="name" class="form-label fw-bold text-light">Nombre:</label>
+            {{ form.client }}
+        </div>    
+        <div class="mb-3 mx-auto w-50">
+            <label for="email" class="form-label fw-bold text-light">Correo:</label>
+            {{ form.email }}
+        </div>
+        <div class="mb-3 mx-auto w-50">
+            <label for="phone" class="form-label fw-bold text-light">Teléfono:</label>
+            {{ form.phone }}
+        </div>
+        <div class="mb-3 mx-auto w-50">
+            <label for="barber" class="form-label fw-bold text-light">Barbero:</label>
+            {{ form.barber }}
+        </div>
+        <div class="mb-3 mx-auto w-50">
+            <label for="date" class="form-label fw-bold text-light">Fecha:</label>
+            {{ form.date }}
+        </div>
+        <div class="mb-3 mx-auto w-50">
+            <label for="time" class="form-label fw-bold text-light">Hora:</label>
+            {{ form.time }}
+        </div>
+        <button type="submit" class="btn btn-warning w-100 fw-bold">Reservar</button>
+        {% if error %}
+            <div class="alert alert-danger mt-3 text-center">
+                {{ error }}
+            </div>
+        {% endif %}
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            let barberSelect = document.getElementById('id_barber');
+            let dateSelect = document.getElementById('id_date');
+            let timeSelect = document.getElementById('id_time');
+    
+            function updateBarber(){
+                fetch('/get_barbers/')
+                .then(response => response.json())
+                .then(data =>{
+                    console.log("Barberos:", data.barbers);
+                    barberSelect.innerHTML = '<option value="">Selecciona un barbero</option>';
+
+                    data.barbers.forEach(barber =>{
+                        let option = document.createElement('option');
+                        option.value = barber.id;
+                        option.textContent = `${barber.name} - ${barber.hability} - ${barber.price}`;
+                        barberSelect.appendChild(option);
+                    })
+                    .catch(error =>console.error('Error getting barbers:', error));
+                })
+            }
+            function updateDates(){
+                let barberId = barberSelect.value;
+    
+                if (barberId){
+                    console.log('barbero seleccionado:', barberId)
+    
+                    fetch(`/get_available_dates/?barber_id=${barberId}`)
+                    .then(response => response.json())
+                    .then(data =>{
+                        console.log("Fechas disponibles:", data.dates);
+                        dateSelect.innerHTML = '<option value="">Selecciona una fecha</option>';
+                        timeSelect.innerHTML = '<option value="">Selecciona un horario</option>';
+    
+                        if (data.dates && data.dates.length > 0){
+                            data.dates.forEach(date => {
+                                let option = document.createElement('option');
+                                option.value = date;
+                                option.textContent = date;
+                                dateSelect.appendChild(option);
+                            });
+                            // Una vez que se actualicen las fechas, actualizamos los horarios
+                            updateTimes();
+                        }else {
+                            let option = document.createElement('option');
+                            option.textContent = 'No hay fechas disponibles';
+                            dateSelect.appendChild(option);
+                        }
+                    })
+                    .catch(error => console.error('Error getting dates:', error)) 
+                }else{
+                    dateSelect.innerHTML = '<option value="">Selecciona una fecha</option>';
+                    timeSelect.innerHTML = '<option value="">Selecciona un horario</option>';
+                }
+            }
+    
+            function updateTimes(){
+                let barberId = barberSelect.value;
+                let dateSelected = dateSelect.value;
+                
+                console.log("Ejecutando updateTimes"); 
+
+                if (barberId && dateSelected){
+                    fetch(`/get_available_times/?barber_id=${barberId}&date=${dateSelected}`)
+                    .then(response => response.json())
+                    .then(data =>{
+                        console.log('Respuesta del servidor:', data);
+                        timeSelect.innerHTML = '';
+    
+                        if (data.times && data.times.length > 0){
+                            data.times.forEach(time =>{
+                                let option = document.createElement('option');
+                                option.value = time;
+                                option.textContent = time;
+                                timeSelect.appendChild(option);
+                            })
+                        }else{
+                            let option = document.createElement('option')
+                            option.textContent = 'No hay horarios disponibles';
+                            timeSelect.appendChild(option);
+                        }
+                    })
+                    .catch(error => console.error('Error getting times:', error))
+                }else{
+                    timeSelect.innerHTML = '<option>Selecciona una fecha</option>';
+                }
+            }
+            
+            barberSelect.addEventListener('change', updateDates);
+            dateSelect.addEventListener('change', updateTimes);
+        });
+
+        //Envio de correo al cliente
+        document.querySelector("#reserveForm").addEventListener("submit", function(event){
+            event.preventDefault()
+
+            fetch('/reserve/', {
+                method: 'POST',
+                body: new FormData(this),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error){
+                    alert("Error reservando: " + data.error);
+                }else{
+                    emailjs.send("service_4rbjqsn", "template_62vm85m", data)
+                    .then(() => {
+                        window.location.href = "/succesful_reserve"
+                    })
+                    .catch(error => console.error("Error enviando EmailJS:", error));
+                }
+            });
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>

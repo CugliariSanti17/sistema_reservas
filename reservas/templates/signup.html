@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="background: #222">
+    {% extends 'base.html' %}
+    
+    {% block content %}
+    <main class="d-flex justify-content-center align-items-center vh-100">
+        <div class="row w-100">
+            <div class="col-md-4 offset-md-4">
+                <form action="/signup/" method="POST" class="card card-body shadow-lg p-4 rounded" style="background: #222; color: #fff; border: 2px solid #b8860b;">
+                    <h1 class="text-center text-warning mb-4" style="font-family: 'Georgia', serif;">Registro</h1>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="username" class="form-label fw-bold text-light">👤Usuario:</label>
+                        <input type="text" class="form-control bg-dark text-light border-warning" placeholder="Escribe tu usuario" name="username" id="username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password1" class="form-label fw-bold text-light">🔐Contraseña:</label>
+                        <input type="password" class="form-control bg-dark text-light border-warning" placeholder="Escribe tu contraseña" name="password1" id="password1">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password2" class="form-label fw-bold text-light">🔐Confirma tu contraseña:</label>
+                        <input type="password" class="form-control bg-dark text-light border-warning" placeholder="Confirma tu contraseña" name="password2" id="password2">
+                    </div>
+                    
+                    <button class="btn btn-warning w-100 fw-bold">Registrarse</button>
+                    
+                    {% if error %}
+                    <div class="alert alert-danger mt-3 text-center">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </main>
+    {% endblock %}
+</body>
+</html>
