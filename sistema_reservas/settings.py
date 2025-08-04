@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-iqk$vr7(64w+!c5wv*aur45&njgvbahj0sugp*!1m!fs4rc9&)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'web-production-295c7.up.railway.app']
+ALLOWED_HOSTS = ['localhost', '.vercel.app', '127.0.0.1']
 
 
 # Application definition
@@ -75,14 +75,17 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'sistema_reservas.wsgi.application'
+WSGI_APPLICATION = 'sistema_reservas.wsgi.app'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+    'default': {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
@@ -120,7 +123,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -133,8 +139,8 @@ STATICFILES_DIRS =[
     os.path.join(BASE_DIR,'reservas/static')
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
 
 CSRF_TRUSTED_ORIGINS = ['http://*', 'https://web-production-295c7.up.railway.app']
